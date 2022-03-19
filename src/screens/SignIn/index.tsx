@@ -1,6 +1,6 @@
 import { Input } from '@components/Input';
 import { Button } from '@components/Button';
-import React, { useEffect } from 'react';
+import React from 'react';
 import brandImage from '@assets/brand.png';
 import { KeyboardAvoidingView, Platform } from 'react-native';
 import { useAuth } from '@hooks/auth';
@@ -15,12 +15,15 @@ export function SignIn() {
     const { signIn,forgotPassword, isLogging } = useAuth();
 
     function handleSignIn() {
-      forgotPassword(email);
+      signIn(email, password);
     };
 
- 
+    function handleForgotPassword() {
+      forgotPassword(email);
+    };
+    
   return (
-    <Container style={{backgroundColor: 'red'}}>
+    <Container >
       <KeyboardAvoidingView behavior={Platform.OS == 'ios' ? 'padding' : undefined}>
         <Content>
           <Brand source={brandImage} />
@@ -43,7 +46,7 @@ export function SignIn() {
           value={password}
           onChangeText={setPassword}
         />
-        <ForgotPassword >
+        <ForgotPassword onPress={handleForgotPassword}>
          <ForgotPasswordLabel>
          Esqueceu sua senha?
            </ForgotPasswordLabel> 

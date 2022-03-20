@@ -2,7 +2,7 @@ import styled from "styled-components/native";
 import { Platform } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { getStatusBarHeight } from "react-native-iphone-x-helper";
- 
+ import { Button } from "@components/Button";
 export const Container = styled.KeyboardAvoidingView.attrs({
     behavior:   Platform.OS === "ios" ? "padding" : undefined,
     })`
@@ -36,4 +36,17 @@ export const DeleteLabel = styled.Text`
     color: ${({theme}) => theme.COLORS.TITLE};
     font-family: ${({theme}) => theme.FONTS.TITLE};
 `;
+
+export const Upload = styled.View`
+    width: 100%;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin: 32px 0;
+`
+export const PickImageButton = styled(Button)`
+    max-width: 90px;
+    margin-left: 32px;
+`
+
  

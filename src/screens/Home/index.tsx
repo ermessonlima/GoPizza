@@ -1,18 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import happyEmoji from '@assets/happy.png';
 import { MaterialIcons } from '@expo/vector-icons';
-import { Container, Header, Greeting, GreetingEmoji, GreetingText, SignOut, MenuHeader, MenuItemsNumber, Title } from './styles';
+import { NewProductButton, Container, Header, Greeting, GreetingEmoji, GreetingText, SignOut, MenuHeader, MenuItemsNumber, Title } from './styles';
 import { useTheme } from 'styled-components';
 import { Search } from '@components/Search';
 import { ProductCard, ProductProps } from '@components/ProductCard';
 import firestore from '@react-native-firebase/firestore';
 import { Alert } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 export function Home() {
 
   const [pizzas, setPizzas] = useState<ProductProps[]>([]);
   const [search, setSearch] = useState('');
+  const navigation = useNavigation();
   const theme = useTheme();
 
   function fetchPizzas(value: string) {
@@ -46,10 +48,23 @@ export function Home() {
     fetchPizzas('');
   }
 
+  function handleOpen(id: string) {
+    navigation.navigate('product', { id });
+  }
 
-  useEffect(() => {
-    fetchPizzas('');
-  }, []);
+  function handleAdd() {
+    navigation.navigate('product', {});
+  }
+
+
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchPizzas('');
+    }, [])
+  );
+
+
 
 
 
@@ -80,9 +95,22 @@ export function Home() {
       <FlatList
         data={pizzas}
         keyExtractor={item => item.id}
-        renderItem={({ item }) => <ProductCard data={item} />}
+        renderItem={({ item }) => (
+          <ProductCard
+            onPress={() => handleOpen(item.id)}
+            data={item} />
+        )
+
+        }
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingTop: 20, paddingBottom: 125, marginHorizontal: 24 }}
+      />
+
+      <NewProductButton
+        onPress={handleAdd}
+        title={'Cadastrar pizza'}
+        type={'secondary'}
+
       />
 
 

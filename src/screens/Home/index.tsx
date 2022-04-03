@@ -9,6 +9,7 @@ import firestore from '@react-native-firebase/firestore';
 import { Alert } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { useAuth } from '@hooks/auth';
 
 export function Home() {
 
@@ -16,6 +17,8 @@ export function Home() {
   const [search, setSearch] = useState('');
   const navigation = useNavigation();
   const theme = useTheme();
+
+  const { signOut, user } = useAuth();
 
   function fetchPizzas(value: string) {
     const formatedValue = value.toLowerCase().trim();
@@ -49,7 +52,9 @@ export function Home() {
   }
 
   function handleOpen(id: string) {
-    navigation.navigate('product', { id });
+
+    const route = user?.isAdmin ? 'product' : 'order';
+    navigation.navigate(route, { id });
   }
 
   function handleAdd() {
@@ -76,7 +81,7 @@ export function Home() {
           <GreetingText>Olá, Admin</GreetingText>
         </Greeting>
 
-        <SignOut>
+        <SignOut onPress={signOut}>
           <MaterialIcons name="logout" size={24} color={theme.COLORS.TITLE} />
         </SignOut>
       </Header>
@@ -88,7 +93,7 @@ export function Home() {
       <MenuHeader>
         <Title>Cardápio</Title>
         <MenuItemsNumber >
-          10 pizzas
+          {pizzas.length} pizzas
         </MenuItemsNumber>
       </MenuHeader>
 
@@ -106,12 +111,13 @@ export function Home() {
         contentContainerStyle={{ paddingTop: 20, paddingBottom: 125, marginHorizontal: 24 }}
       />
 
-      <NewProductButton
+      {
+      user?.isAdmin && <NewProductButton
         onPress={handleAdd}
         title={'Cadastrar pizza'}
         type={'secondary'}
-
       />
+      }
 
 
     </Container>
